@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose.connect(process.env.URL)
 
-mongoose.connection.on('connect', () => {
+mongoose.connection.on('connected', () => {
     console.log("Mongoose Connected ✅")
 })
 
