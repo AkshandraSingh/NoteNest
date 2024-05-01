@@ -133,4 +133,32 @@ module.exports = {
             })
         }
     },
+
+    // Edit Profile API
+    editProfile: async (req, res) => {
+        try {
+            const userId = req.params.userId;
+            const { userName } = req.body;
+            const userProfilePic = req.file ? `/upload/userProfile/${req.file.filename}` : undefined;
+            const updateUserData = await userModel.findByIdAndUpdate(
+                userId,
+                {
+                    userProfilePic: userProfilePic || undefined,
+                    userName: userName || undefined,
+                },
+                { new: true }
+            );
+            res.status(200).json({
+                success: true,
+                message: "User profile updated",
+                updatedData: updateUserData
+            });
+        } catch (error) {
+            res.status(500).send({
+                success: false,
+                message: "Error",
+                error: error.message
+            })
+        }
+    }
 }
