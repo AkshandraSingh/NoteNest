@@ -13,12 +13,17 @@ const noteModel = new mongoose.Schema({
         type: String,
         default: "Not Provided"
     },
+    userId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
     isActive: {
         type: Boolean,
         default: true
     }
 })
 
-userSchema.set("timestamps", true)
+noteModel.set("timestamps", true)
 
 module.exports = mongoose.model("note", noteModel)
