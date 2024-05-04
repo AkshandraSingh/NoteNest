@@ -59,4 +59,28 @@ module.exports = {
             })
         }
     },
+
+    viewNotes: async (req, res) => {
+        try {
+            const { userId } = req.params
+            const notes = await noteModel.find({ userId: userId })
+            if (notes.length <= 0) {
+                res.status(404).send({
+                    success: false,
+                    message: "No Notes Found"
+                })
+            }
+            res.status(200).send({
+                success: true,
+                message: "Notes Fetched Successfully",
+                data: notes
+            })
+        } catch (error) {
+            res.status(500).send({
+                success: false,
+                message: "Error",
+                error: error.message
+            })
+        }
+    }
 }

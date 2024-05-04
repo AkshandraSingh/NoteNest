@@ -8,5 +8,6 @@ const noteRouter = express.Router()
 noteRouter.post('/addNote/:userId', noteController.addNote)
 noteRouter.patch('/updateNote/:noteId', noteImageUpload.single('noteImage'), noteController.updateNote)
 noteRouter.delete('/deleteNote/:noteId', noteController.deleteNote)
+noteRouter.get('/viewNotes/:userId', noteController.viewNotes)
 
 module.exports = noteRouter
