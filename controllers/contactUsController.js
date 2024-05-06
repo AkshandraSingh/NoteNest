@@ -15,5 +15,21 @@ module.exports = {
                 message: error.message
             })
         }
-    }
+    },
+
+    viewContactUs: async (req, res) => {
+        try {
+            const contactUsData = await contactUsModel.find()
+            res.status(200).send({
+                success: true,
+                message: "Contact Us Form Data Fetched Successfully",
+                contactUsData: contactUsData
+            })
+        } catch (error) {
+            res.status(500).send({
+                success: false,
+                message: error.message
+            })
+        }
+    },
 }
