@@ -47,17 +47,10 @@ module.exports = {
             }
             const isPasswordCorrect = await bcrypt.compare(userPassword, isUserExist.userPassword)
             if (!isPasswordCorrect) {
-                return res.status(400).send({
-                    success: false,
-                    message: "Incorrect Password"
-                })
+                return res.sendFile(path.join(__dirname, '..', 'views', 'passwordIncorrect.html'));
             }
-            const token = jwt.sign({ isUserExist }, process.env.SECRET_KEY, { expiresIn: '1h' });
-            res.status(200).send({
-                success: true,
-                message: "User Logged In Successfully",
-                token: token
-            })
+            const token = jwt.sign({ isUserExist }, process.env.SECRET_KEY, { expiresIn: '1h' }); // I will done later ✨
+            res.sendFile(path.join(__dirname, '..', 'views', 'noteDashboard.html'));
         } catch (error) {
             res.status(500).send({
                 success: false,
