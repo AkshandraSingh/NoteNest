@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const path = require('path');
 
 const userModel = require('../models/userModel')
 const emailService = require('../services/emailService')
@@ -21,10 +22,7 @@ module.exports = {
             const hashedPassword = await bcrypt.hash(req.body.userPassword, 10)
             userData.userPassword = hashedPassword
             await userData.save()
-            res.status(202).send({
-                success: true,
-                message: "User Registered Successfully"
-            })
+            res.sendFile(path.join(__dirname, '..', 'views', 'noteDashboard.html'));
         } catch (error) {
             res.status(500).send({
                 success: false,
