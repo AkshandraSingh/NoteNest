@@ -84,14 +84,9 @@ module.exports = {
                     message: "User not found!"
                 })
             }
-            const token = jwt.sign({ isEmailExist }, process.env.SECRET_KEY, { expiresIn: '1h' });
-            await emailService.mailOptions(userAccount)
-            res.status(200).send({
-                success: true,
-                message: "Email has been sended successfully",
-                userId: isEmailExist._id,
-                token: token,
-            })
+            const token = jwt.sign({ isEmailExist }, process.env.SECRET_KEY, { expiresIn: '1h' }); // I will do it later
+            await emailService.mailOptions(userEmail)
+            res.sendFile(path.join(__dirname, '..', 'views', 'forgetPasswordNote.html'));
         } catch (error) {
             res.status(500).send({
                 success: false,
