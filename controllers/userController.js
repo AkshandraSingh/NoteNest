@@ -11,9 +11,12 @@ module.exports = {
         try {
             const userData = new userModel(req.body)
             const isUserExist = await userModel.findOne({
+                userName: req.body.userName
+            })
+            const isUserEmailExist = await userModel.findOne({
                 userEmail: req.body.userEmail
             })
-            if (isUserExist) {
+            if (isUserExist || isUserEmailExist) {
                 return res.status(400).send({
                     success: false,
                     message: "User Already Exist"
@@ -35,21 +38,26 @@ module.exports = {
     // Login User API
     loginUser: async (req, res) => {
         try {
-            const { userEmail, userPassword } = req.body
-            const isUserExist = await userModel.findOne({
-                userEmail: userEmail
+            const { userAccount, userPassword } = req.body
+            const isUserExistWithEmail = await userModel.findOne({
+                userEmail: userAccount
             })
-            if (!isUserExist) {
+            const isUserExistWithUserName = await userModel.findOne({
+                userName: userAccount
+            })
+            const userData = isUserExistWithEmail || isUserExistWithUserName
+            console.log(userData)
+            if (!userData) {
                 return res.status(404).send({
                     success: false,
                     message: "User Does Not Exist"
                 })
             }
-            const isPasswordCorrect = await bcrypt.compare(userPassword, isUserExist.userPassword)
+            const isPasswordCorrect = await bcrypt.compare(userPassword, userData.userPassword)
             if (!isPasswordCorrect) {
                 return res.sendFile(path.join(__dirname, '..', 'views', 'passwordIncorrect.html'));
             }
-            const token = jwt.sign({ isUserExist }, process.env.SECRET_KEY, { expiresIn: '1h' }); // I will done later ✨
+            const token = jwt.sign({ userData }, process.env.SECRET_KEY, { expiresIn: '1h' }); // I will done later ✨
             res.sendFile(path.join(__dirname, '..', 'views', 'noteDashboard.html'));
         } catch (error) {
             res.status(500).send({
@@ -74,7 +82,7 @@ module.exports = {
                 })
             }
             const token = jwt.sign({ isEmailExist }, process.env.SECRET_KEY, { expiresIn: '1h' });
-            await emailService.mailOptions(userEmail)
+            await emailService.mailOptions(userAccount)
             res.status(200).send({
                 success: true,
                 message: "Email has been sended successfully",
