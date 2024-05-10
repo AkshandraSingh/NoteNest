@@ -38,33 +38,36 @@ module.exports = {
     // Login User API
     loginUser: async (req, res) => {
         try {
-            const { userAccount, userPassword } = req.body
-            const isUserExistWithEmail = await userModel.findOne({
-                userEmail: userAccount
-            })
-            const isUserExistWithUserName = await userModel.findOne({
-                userName: userAccount
-            })
-            const userData = isUserExistWithEmail || isUserExistWithUserName
-            console.log(userData)
+            const { userAccount, userPassword } = req.body;
+            const isUserExistWithEmail = await userModel.findOne({ userEmail: userAccount });
+            const isUserExistWithUserName = await userModel.findOne({ userName: userAccount });
+            const userData = isUserExistWithEmail || isUserExistWithUserName;
             if (!userData) {
-                return res.status(404).send({
+                return res.status(404).json({
                     success: false,
                     message: "User Does Not Exist"
-                })
+                });
             }
-            const isPasswordCorrect = await bcrypt.compare(userPassword, userData.userPassword)
+            const isPasswordCorrect = await bcrypt.compare(userPassword, userData.userPassword);
             if (!isPasswordCorrect) {
-                return res.sendFile(path.join(__dirname, '..', 'views', 'passwordIncorrect.html'));
+                return res.status(401).json({
+                    success: false,
+                    message: "Incorrect Password"
+                });
             }
-            const token = jwt.sign({ userData }, process.env.SECRET_KEY, { expiresIn: '1h' }); // I will done later ✨
-            res.sendFile(path.join(__dirname, '..', 'views', 'noteDashboard.html'));
+            const token = jwt.sign({ userId: userData._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+            res.status(200).json({
+                success: true,
+                message: "User Logged In Successfully",
+                token: token
+            });
+
         } catch (error) {
-            res.status(500).send({
+            res.status(500).json({
                 success: false,
                 message: "Error",
                 error: error.message
-            })
+            });
         }
     },
 
