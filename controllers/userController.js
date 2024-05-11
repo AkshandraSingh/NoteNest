@@ -55,7 +55,7 @@ module.exports = {
                     message: "Incorrect Password"
                 });
             }
-            const token = jwt.sign({ userId: userData._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+            const token = jwt.sign(userData, process.env.SECRET_KEY, { expiresIn: '1h' });
             res.status(200).json({
                 success: true,
                 message: "User Logged In Successfully",

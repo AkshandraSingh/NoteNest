@@ -14,6 +14,7 @@ loginForm.addEventListener("submit", async (event) => {
         });
         const data = await response.json();
         if (data.success) {
+            localStorage.setItem('token', data.token);
             window.location.href = "/noteDashboard.html";
         } else {
             window.location.href = "/passwordIncorrect.html";
